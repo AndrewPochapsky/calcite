@@ -6903,7 +6903,6 @@ SqlPostfixOperator PostfixRowOperator() :
     )
 }
 
-
 /* KEYWORDS:  anything in this list is a reserved word unless it appears
    in the NonReservedKeyWord() production. */
 
@@ -7773,26 +7772,6 @@ void NonReservedKeyWord2of3() :
 </#list>
 }
 
-
-/*****************************************
- * Lexical Descriptions                  *
- *****************************************/
-
-TOKEN_MGR_DECLS : {
-    List<Integer> lexicalStateStack = new ArrayList<Integer>();
-
-    void pushState() {
-      lexicalStateStack.add(curLexState);
-    }
-
-    void popState() {
-      SwitchTo(lexicalStateStack.remove(lexicalStateStack.size() - 1));
-    }
-
-<#if parser.includeAdditionalDeclarations>
-  <#include "/@includes/tokenManagerDeclarations.ftl" />
-</#if>
-}
 
 /*
 Lexical states:
