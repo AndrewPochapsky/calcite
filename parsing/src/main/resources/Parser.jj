@@ -570,3 +570,43 @@ MORE :
 {
     < ~[] >
 }
+
+SqlNodeList SqlStmtList() :
+{
+
+}
+{
+    {
+        return null;
+    }
+}
+
+SqlNodeList SqlStmtListEof() :
+{
+
+}
+{
+    {
+        return null;
+    }
+}
+
+SqlNode SqlStmtEof() :
+{
+
+}
+{
+    {
+        return null;
+    }
+}
+
+SqlNode SqlExpressionEof() :
+{
+
+}
+{
+    {
+        return null;
+    }
+}
