@@ -7801,48 +7801,6 @@ of the 'normal states'.
 |   "\f"
 }
 
-/* COMMENTS */
-
-<DEFAULT, DQID, BTID> TOKEN :
-{
-    < HINT_BEG: "/*+">
-|   < COMMENT_END: "*/" >
-}
-
-<DEFAULT, DQID, BTID> MORE :
-{
-    <"/**" ~["/"]> { pushState(); } : IN_FORMAL_COMMENT
-}
-
-<DEFAULT, DQID, BTID> MORE :
-{
-    "/*" { pushState(); } : IN_MULTI_LINE_COMMENT
-}
-
-<DEFAULT, DQID, BTID> SKIP :
-{
-    <SINGLE_LINE_COMMENT: ("//"|"--")(~["\n","\r"])* ("\n"|"\r"|"\r\n")? >
-}
-
-<IN_FORMAL_COMMENT>
-SPECIAL_TOKEN :
-{
-    <FORMAL_COMMENT: <COMMENT_END> > { popState(); }
-}
-
-<IN_MULTI_LINE_COMMENT>
-SPECIAL_TOKEN :
-{
-    <MULTI_LINE_COMMENT: <COMMENT_END> > { popState(); }
-}
-
-<IN_FORMAL_COMMENT,IN_MULTI_LINE_COMMENT>
-MORE :
-{
-    < ~[] >
-}
-
-
 /* IDENTIFIERS */
 
 <DEFAULT> TOKEN :
