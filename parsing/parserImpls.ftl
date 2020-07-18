@@ -7801,110 +7801,6 @@ of the 'normal states'.
 |   "\f"
 }
 
-/* IDENTIFIERS */
-
-<DEFAULT> TOKEN :
-{
-    < BRACKET_QUOTED_IDENTIFIER:
-    "["
-    (
-        (~["]","\n","\r"])
-    |
-        ("]]")
-    )+
-    "]"
-    >
-}
-
-<DQID> TOKEN :
-{
-    < QUOTED_IDENTIFIER:
-    "\""
-    (
-        (~["\"","\n","\r"])
-    |
-        ("\"\"")
-    )+
-    "\""
-    >
-}
-
-<BTID>  TOKEN :
-{
-    < BACK_QUOTED_IDENTIFIER:
-    "`"
-    (
-        (~["`","\n","\r"])
-    |
-        ("``")
-    )+
-    "`"
-    >
-}
-
-<DEFAULT, DQID, BTID> TOKEN :
-{
-    < COLLATION_ID:
-    (<LETTER>|<DIGIT>)+ (<LETTER>|<DIGIT>|":"|"."|"-"|"_")*
-    "$"
-    (<LETTER>|"_")+
-    ("$" (<LETTER>|<DIGIT>|"_")+)?
-    >
-|
-    < IDENTIFIER: <LETTER> (<LETTER>|<DIGIT>)* >
-|
-    < UNICODE_QUOTED_IDENTIFIER: "U" "&" <QUOTED_IDENTIFIER> >
-|
-    < #LETTER:
-    [
-        "\u0024",
-        "\u0041"-"\u005a",
-        "\u005f",
-        "\u0061"-"\u007a",
-        "\u00c0"-"\u00d6",
-        "\u00d8"-"\u00f6",
-        "\u00f8"-"\u00ff",
-        "\u0100"-"\u1fff",
-        "\u3040"-"\u318f",
-        "\u3300"-"\u337f",
-        "\u3400"-"\u3d2d",
-        "\u4e00"-"\u9fff",
-        "\uf900"-"\ufaff"
-    ]
-    >
-|
-    < #DIGIT:
-    [
-        "\u0030"-"\u0039",
-        "\u0660"-"\u0669",
-        "\u06f0"-"\u06f9",
-        "\u0966"-"\u096f",
-        "\u09e6"-"\u09ef",
-        "\u0a66"-"\u0a6f",
-        "\u0ae6"-"\u0aef",
-        "\u0b66"-"\u0b6f",
-        "\u0be7"-"\u0bef",
-        "\u0c66"-"\u0c6f",
-        "\u0ce6"-"\u0cef",
-        "\u0d66"-"\u0d6f",
-        "\u0e50"-"\u0e59",
-        "\u0ed0"-"\u0ed9",
-        "\u1040"-"\u1049"
-    ]
-    >
-}
-
-/* Special token to throw a wrench in the works. It is never valid in SQL,
-   and so when it occurs, it causes the parser to print which tokens would
-   have been valid at that point. Used by SqlAdvisor. */
-<DEFAULT, DQID, BTID> TOKEN :
-{
-    < BEL:
-    [
-        "\u0007"
-    ]
-    >
-}
 
 /**
  * Defines a production which can never be accepted by the parser.
@@ -7921,4 +7817,137 @@ void UnusedExtension() :
         LOOKAHEAD({false}) <ZONE>
     )
 }
+
+SqlNode SqlStmt() :
+{
+    SqlNode stmt;
+}
+{
+    (
+<#-- Add methods to parse additional statements here -->
+<#list parser.statementParserMethods as method>
+        LOOKAHEAD(2) stmt = ${method}
+    |
+</#list>
+        stmt = SqlSetOption(Span.of(), null)
+    |
+        stmt = SqlAlter()
+    |
+<#if parser.createStatementParserMethods?size != 0>
+        stmt = SqlCreate()
+    |
+</#if>
+<#if parser.renameStatementParserMethods?size != 0>
+        stmt = SqlRename()
+    |
+</#if>
+<#if parser.execStatementParserMethods?size != 0>
+        stmt = SqlExec()
+    |
+</#if>
+<#if  parser.usingStatementParserMethods?size != 0>
+        stmt = SqlUsing()
+    |
+</#if>
+<#if parser.setTimeZoneStatementParserMethods?size != 0>
+        stmt = SqlSetTimeZone()
+    |
+</#if>
+<#if parser.allowUpsertFormOfUpdate>
+        LOOKAHEAD(SqlUpdate() <ELSE>)
+        stmt = SqlUpsert()
+    |
+</#if>
+        stmt = SqlUpdate()
+    |
+        stmt = SqlInsert()
+    |
+<#if parser.dropStatementParserMethods?size != 0>
+        stmt = SqlDrop()
+    |
+</#if>
+        stmt = OrderedQueryOrExpr(ExprContext.ACCEPT_QUERY)
+    |
+        stmt = SqlExplain()
+    |
+        stmt = SqlDescribe()
+    |
+        stmt = SqlDelete()
+    |
+        stmt = SqlMerge()
+    |
+        stmt = SqlProcedureCall()
+    )
+    {
+        return stmt;
+    }
+}
+SqlNode SqlExpressionEof() :
+{
+    SqlNode e;
+}
+{
+    e = Expression(ExprContext.ACCEPT_SUB_QUERY) (<EOF>)
+    {
+        return e;
+    }
+}
+/**
+ * Parses an SQL statement followed by the end-of-file symbol.
+ */
+SqlNode SqlStmtEof() :
+{
+    SqlNode stmt;
+}
+{
+    stmt = SqlStmt() <EOF>
+    {
+        return stmt;
+    }
+}
+
+/**
+ * Parses a list of SQL statements separated by semicolon.
+ * The semicolon is required between statements, but is
+ * optional at the end.
+ */
+SqlNodeList SqlStmtList() :
+{
+    final List<SqlNode> stmtList = new ArrayList<SqlNode>();
+    SqlNode stmt;
+}
+{
+    stmt = SqlStmt() {
+        stmtList.add(stmt);
+    }
+    (
+        <SEMICOLON>
+        [
+            stmt = SqlStmt() {
+                stmtList.add(stmt);
+            }
+        ]
+    )*
+    {
+        return new SqlNodeList(stmtList, Span.of(stmtList).pos());
+    }
+}
+/**
+ * Parses a list of SQL statements separated by semicolon with an <EOF> expected.
+ * The semicolon is required between statements, but is
+ * optional at the end.
+ */
+SqlNodeList SqlStmtListEof() :
+{
+    final SqlNodeList stmtList;
+}
+{
+    stmtList = SqlStmtList()
+    <EOF>
+    {
+        return stmtList;
+    }
+}
+
+
 
