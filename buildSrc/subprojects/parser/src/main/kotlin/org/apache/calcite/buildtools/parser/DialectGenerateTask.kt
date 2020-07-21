@@ -18,9 +18,11 @@ package org.apache.calcite.buildtools.parser
 
 import javax.inject.Inject
 import org.gradle.api.DefaultTask
+import org.gradle.api.file.FileCollection
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputDirectory
+import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.TaskAction
 
 /* Gradle task that traverses the parsing directory and generates the parserImpls.ftl
@@ -30,8 +32,8 @@ open class DialectGenerateTask @Inject constructor(
     objectFactory: ObjectFactory
 ) : DefaultTask() {
 
-    @InputDirectory
-    val dialectDirectory = objectFactory.directoryProperty()
+    @InputFiles
+    var dialectDirectories: FileCollection? = null
 
     @InputDirectory
     val rootDirectory = objectFactory.directoryProperty()
@@ -42,8 +44,9 @@ open class DialectGenerateTask @Inject constructor(
     @TaskAction
     fun run() {
         val rootDirectoryFile = rootDirectory.get().asFile
-        val dialectDirectoryFile = dialectDirectory.get().asFile
-        val dialectTraverser = DialectTraverser(dialectDirectoryFile, rootDirectoryFile, outputFile)
-        dialectTraverser.run()
+        for (dialectDirectory in dialectDirectories!!.getFiles()) {
+            val dialectTraverser = DialectTraverser(dialectDirectory, rootDirectoryFile, outputFile)
+            dialectTraverser.run()
+        }
     }
 }

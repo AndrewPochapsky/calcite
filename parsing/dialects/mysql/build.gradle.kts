@@ -39,7 +39,7 @@ dependencies {
 
 val dialectGenerate by tasks.registering(org.apache.calcite.buildtools.parser.DialectGenerateTask::class) {
     rootDirectory.set(file("$rootDir/parsing"))
-    dialectDirectory.set(file("."))
+    dialectDirectories = files(file("."))
     outputFile = "build/generated/templates/parserImpls.ftl"
 }
 
