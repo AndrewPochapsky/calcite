@@ -188,13 +188,15 @@ public class DialectTraverser {
           JsonReader jsonReader = Json.createReader(stringReader);
           JsonObject json = jsonReader.readObject();
           jsonReader.close();
-          JsonArray keywordsJson = !json.containsKey("keywords")
-            || json.isNull("keywords")
+          boolean keywordsIsNull = !json.containsKey("keywords")
+            || json.isNull("keywords");
+          boolean nonReservedKeywordsIsNull =
+            !json.containsKey("nonReservedKeywords")
+            || json.isNull("nonReservedKeywords");
+          JsonArray keywordsJson = keywordsIsNull
               ? null
               : json.getJsonArray("keywords");
-          JsonArray nonReservedKeywordsJson =
-            !json.containsKey("nonReservedKeywords")
-            || json.isNull("nonReservedKeywords")
+          JsonArray nonReservedKeywordsJson = nonReservedKeywordsIsNull
               ? null
               : json.getJsonArray("nonReservedKeywords");
           Map<Keyword, String> keywords = unparseKeywordsJson(keywordsJson,
