@@ -21,7 +21,8 @@ plugins {
 }
 
 dependencies {
-    implementation("org.json:json:20200518")
+    implementation("javax.json:javax.json-api:1.1")
+    implementation("org.glassfish:javax.json:1.1")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.5.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.5.1")
 }
