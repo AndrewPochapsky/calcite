@@ -27,13 +27,13 @@ import java.util.Set;
  * A simple container class to hold the data extracted from files.
  */
 public class ExtractedData {
-  public final Map<Keyword, String> keywords;
-  public final Set<Keyword> nonReservedKeywords;
+  public final Set<Token> keywords;
+  public final Set<Token> nonReservedKeywords;
   public final Map<String, String> functions;
   public final List<String> tokenAssignments;
 
   public ExtractedData() {
-    keywords = new LinkedHashMap<>();
+    keywords = new LinkedHashSet<>();
     nonReservedKeywords = new LinkedHashSet<>();
     functions = new LinkedHashMap<>();
     tokenAssignments = new ArrayList<>();

@@ -191,9 +191,9 @@ public class DialectTraverser {
             || json.get("nonReservedKeywords").isJsonNull()
               ? null
               : json.getAsJsonArray("nonReservedKeywords");
-          Map<Keyword, String> keywords = unparseKeywordsJson(keywordsJson,
+          Map<Token, String> keywords = unparseKeywordsJson(keywordsJson,
               filePath);
-          Set<Keyword> nonReservedKeywords = unparseNonReservedKeywordsJson(
+          Set<Token> nonReservedKeywords = unparseNonReservedKeywordsJson(
               nonReservedKeywordsJson, filePath);
           try {
             dialectGenerate.processKeywords(keywords, nonReservedKeywords,
@@ -213,7 +213,7 @@ public class DialectTraverser {
   }
 
   /**
-   * Converts the {@code keywordsJson} into a {@code Map<Keyword, String>}.
+   * Converts the {@code keywordsJson} into a {@code Map<Token, String>}.
    * It is assumed that {@code keywordsJson} is either null or of the form:
    *
    * [
@@ -227,26 +227,29 @@ public class DialectTraverser {
    * @param keywordsJson The keywords json
    * @param filePath The file path these keywords were taken from
    *
-   * @return The {@code Map<Keyword, String>} that the json was converted to
+   * @return The {@code Set<Token>} that the json was converted to
    */
-  private static Map<Keyword, String> unparseKeywordsJson(JsonArray keywordsJson,
+  private static Set<Token> unparseKeywordsJson(JsonArray keywordsJson,
       String filePath) {
-    Map<Keyword, String> keywords = new LinkedHashMap<>();
+    Set<Token> keywords = new LinkedHashMap<>();
     if (keywordsJson == null) {
       return keywords;
     }
     for (Object obj : keywordsJson) {
       JsonObject keywordJson = (JsonObject) obj;
       // There is only one key.
-      String keyword = keywordJson.keySet().iterator().next();
-      keywords.put(new Keyword(keyword, filePath),
-          keywordJson.get(keyword).getAsString().toUpperCase());
+      String keyword = keywordJson.get("name").getAsString();
+      String value = keyword;
+      if (keywordJson.has("value")) {
+        value = keywordJson.get("value").getAsString();
+      }
+      keywords.put(new Token(keyword, value, filePath));
     }
     return keywords;
   }
 
   /**
-   * Converts the {@code nonReservedKeywordsJson} into a {@code Set<Keyword>}.
+   * Converts the {@code nonReservedKeywordsJson} into a {@code Set<Token>}.
    * It is assumed that {@code nonReservedKeywordsJson} is either null or of
    * the form:
    *
@@ -261,17 +264,17 @@ public class DialectTraverser {
    * @param nonReservedKeywordsJson The non reserved keywords json
    * @param filePath The file path these keywords were taken from
    *
-   * @return The {@code Map<Keyword, String>} that the json was converted to
+   * @return The {@code Set<Token>} that the json was converted to
    */
-  private static Set<Keyword> unparseNonReservedKeywordsJson(
+  private static Set<Token> unparseNonReservedKeywordsJson(
       JsonArray nonReservedKeywordsJson, String filePath) {
-    Set<Keyword> nonReservedKeywords = new LinkedHashSet<>();
+    Set<Token> nonReservedKeywords = new LinkedHashSet<>();
     if (nonReservedKeywordsJson == null) {
       return nonReservedKeywords;
     }
     for (JsonElement element : nonReservedKeywordsJson) {
       String keyword = element.getAsString();
-      nonReservedKeywords.add(new Keyword(keyword, filePath));
+      nonReservedKeywords.add(new Token(keyword, keyword, filePath));
     }
     return nonReservedKeywords;
   }

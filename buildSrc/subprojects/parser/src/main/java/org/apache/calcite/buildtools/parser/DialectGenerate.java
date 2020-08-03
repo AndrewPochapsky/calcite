@@ -74,16 +74,21 @@ public class DialectGenerate {
    *     extractedData.keywords
    */
   public void processKeywords(
-      Map<Keyword, String> keywords,
-      Set<Keyword> nonReservedKeywords,
+      Set<Token> keywords,
+      Set<Token> nonReservedKeywords,
       ExtractedData extractedData) {
-    for (Keyword keyword : nonReservedKeywords) {
-      if (!keywords.containsKey(keyword)
-            && !extractedData.keywords.containsKey(keyword)) {
-        throw new IllegalStateException(keyword.keyword + " is not a keyword.");
+    for (Token keyword : nonReservedKeywords) {
+      if (!keywords.contains(keyword)
+            && !extractedData.keywords.contains(keyword)) {
+        throw new IllegalStateException(keyword.name + " is not a keyword.");
       }
     }
-    extractedData.keywords.putAll(keywords);
+    for (Token keyword : keywords) {
+      if (!extractedData.keywords.add(keyword)) {
+        extractedDat.keywords.remove(keyword);
+        extractedDat.keywords.add(keyword);
+      }
+    }
     extractedData.nonReservedKeywords.addAll(nonReservedKeywords);
   }
 
@@ -113,11 +118,10 @@ public class DialectGenerate {
     stringBuilder.append("<DEFAULT, DQID, BTID> TOKEN :\n{\n");
     String tokenTemplate = "< %s: \"%s\" >";
     List<String> tokens = new ArrayList<>();
-    for (Map.Entry<Keyword, String> entry : extractedData.keywords.entrySet()) {
+    for (Token keyword : extractedData.keywords) {
       StringBuilder tokenBuilder = new StringBuilder();
-      Keyword keyword = entry.getKey();
-      tokenBuilder.append(String.format(tokenTemplate, keyword.keyword,
-          entry.getValue()));
+      tokenBuilder.append(String.format(tokenTemplate, keyword.name,
+          keyword.value));
       if (keyword.filePath == null) {
         tokenBuilder.append(" // No file specified.");
       } else {
@@ -214,9 +218,9 @@ public class DialectGenerate {
       final Set<Keyword> keywords) {
     final List<String> tokens = new ArrayList<>();
     final StringBuilder bodyBuilder = new StringBuilder();
-    for (Keyword keyword : keywords) {
+    for (Token keyword : keywords) {
       StringBuilder tokenBuilder = new StringBuilder();
-      tokenBuilder.append("<").append(keyword.keyword).append(">");
+      tokenBuilder.append("<").append(keyword.name).append(">");
       if (keyword.filePath == null) {
         tokenBuilder.append(" // No file specified.");
       } else {
@@ -245,7 +249,7 @@ public class DialectGenerate {
     for (int i = 0; i < numPartitions; i++) {
       partitions.add(new LinkedHashSet<Keyword>());
     }
-    for (Keyword keyword : keywords) {
+    for (Token keyword : keywords) {
       partitions.get(index / PARTITION_SIZE).add(keyword);
       index++;
     }

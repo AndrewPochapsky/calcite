@@ -16,49 +16,51 @@
  */
 package org.apache.calcite.test;
 
-import org.apache.calcite.buildtools.parser.Keyword;
+import org.apache.calcite.buildtools.parser.Token;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class KeywordTest {
+public class TokenTest {
 
   @Test public void testHashCodeEquality() {
-    Keyword a = new Keyword("foo");
-    Keyword b = new Keyword("foo", "path/file");
+    Token a = new Token("foo");
+    Token b = new Token("foo", "bar");
+    Token c = new Token("foo", "foo", "path/file");
     assertEquals(a.hashCode(), b.hashCode());
+    assertEquals(a.hashCode(), c.hashCode());
   }
 
   @Test public void testHashCodeInequality() {
-    Keyword a = new Keyword("foo");
-    Keyword b = new Keyword("bar");
+    Token a = new Token("foo");
+    Token b = new Token("bar");
     assertNotEquals(a.hashCode(), b.hashCode());
   }
 
   @Test public void testEquality() {
-    Keyword a = new Keyword("foo");
-    Keyword b = new Keyword("foo", "path/file");
-    Keyword c = new Keyword("FOO");
+    Token a = new Token("foo", "bar");
+    Token b = new Token("foo", "foo", "path/file");
+    Token c = new Token("FOO");
     assertEquals(a, a);
     assertEquals(a, b);
     assertEquals(a, c);
   }
 
   @Test public void testInequality() {
-    Keyword a = new Keyword("foo");
-    Keyword b = new Keyword("bar");
+    Token a = new Token("foo");
+    Token b = new Token("bar");
     assertNotEquals(a, b);
     assertNotEquals(a, null);
   }
 
-  @Test public void testKeywordGetsCapitalized() {
-    Keyword a = new Keyword("foo");
+  @Test public void testNameGetsCapitalized() {
+    Token a = new Token("foo");
     assertEquals(a.keyword, "FOO");
   }
 
-  @Test public void testNullKeywordInvalid() {
-    assertThrows(NullPointerException.class, () -> new Keyword(null));
+  @Test public void testNullNameInvalid() {
+    assertThrows(NullPointerException.class, () -> new Token(null));
   }
 }
