@@ -20,38 +20,45 @@ package org.apache.calcite.buildtools.parser;
 import java.util.Objects;
 
 /**
- * Simple container class for a keyword.
+ * Simple container class for a token.
  */
-public class Keyword {
-  public final String keyword;
+public class Token {
+  public final String name;
+  public final String value;
   public final String filePath;
 
-  public Keyword(String keyword) {
-    this(keyword, /*filePath=*/ null);
+  public Token(String name) {
+    this(name, name, /*filePath=*/ null);
+  }
+
+  public Token(String name, String value) {
+    this(name, value, /*filePath=*/ null);
   }
 
   /**
-   * Creates a {@code Keyword}.
+   * Creates a {@code Token}.
    *
-   * @param keyword The keyword string
-   * @param filePath The file where this keyword was taken from
+   * @param name The name of the token
+   * @param value The value of the token
+   * @param filePath The file where this token was taken from
    */
-  public Keyword(String keyword, String filePath) {
-    this.keyword = Objects.requireNonNull(keyword.toUpperCase());
+  public Token(String name, String value, String filePath) {
+    this.name = Objects.requireNonNull(name.toUpperCase());
+    this.value = Objects.requireNonNull(value);
     this.filePath = filePath;
   }
 
   @Override public int hashCode() {
-    // The filePath should not be considered when calculating hashCode.
-    return keyword.hashCode();
+    // The filePath and value should not be considered when calculating hashCode.
+    return name.hashCode();
   }
 
   @Override public boolean equals(Object obj) {
-    if (!(obj instanceof Keyword)) {
+    if (!(obj instanceof Token)) {
       return false;
     }
-    Keyword other = (Keyword) obj;
-    // The filePath should not be considered when checking for equality.
-    return this.keyword.equals(other.keyword);
+    Token other = (Token) obj;
+    // The filePath and value should not be considered when checking for equality.
+    return this.token.equals(other.token);
   }
 }
