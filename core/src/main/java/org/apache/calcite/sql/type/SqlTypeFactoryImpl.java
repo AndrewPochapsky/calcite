@@ -23,6 +23,7 @@ import org.apache.calcite.rel.type.RelDataTypeFamily;
 import org.apache.calcite.rel.type.RelDataTypeSystem;
 import org.apache.calcite.sql.SqlCollation;
 import org.apache.calcite.sql.SqlIntervalQualifier;
+import org.apache.calcite.sql.SqlNullTreatment;
 import org.apache.calcite.util.Util;
 
 import java.nio.charset.Charset;
@@ -119,6 +120,13 @@ public class SqlTypeFactoryImpl extends RelDataTypeFactoryImpl {
       SqlIntervalQualifier intervalQualifier) {
     RelDataType newType =
         new IntervalSqlType(typeSystem, intervalQualifier, false);
+    return canonize(newType);
+  }
+
+  public RelDataType createSqlNullTreatmentType(
+      SqlNullTreatment nullTreatment) {
+    RelDataType newType =
+        new NullTreatmentSqlType(typeSystem, nullTreatment, false);
     return canonize(newType);
   }
 

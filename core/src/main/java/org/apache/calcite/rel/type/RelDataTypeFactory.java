@@ -19,6 +19,7 @@ package org.apache.calcite.rel.type;
 import org.apache.calcite.avatica.util.TimeUnit;
 import org.apache.calcite.sql.SqlCollation;
 import org.apache.calcite.sql.SqlIntervalQualifier;
+import org.apache.calcite.sql.SqlNullTreatment;
 import org.apache.calcite.sql.parser.SqlParserPos;
 import org.apache.calcite.sql.type.SqlTypeName;
 import org.apache.calcite.sql.validate.SqlValidatorUtil;
@@ -260,6 +261,15 @@ public interface RelDataTypeFactory {
    */
   RelDataType createSqlIntervalType(
       SqlIntervalQualifier intervalQualifier);
+
+  /**
+   * Creates a SQL null treatment type.
+   *
+   * @param nullTreatment
+   *
+   * @return canonical type descriptor
+   */
+  RelDataType createSqlNullTreatmentType(SqlNullTreatment nullTreatment);
 
   /**
    * Infers the return type of a decimal multiplication. Decimal

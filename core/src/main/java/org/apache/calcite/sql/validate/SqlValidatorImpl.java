@@ -1730,6 +1730,9 @@ public class SqlValidatorImpl implements SqlValidatorWithHints {
     if (node instanceof SqlIdentifier) {
       return getCatalogReader().getNamedType((SqlIdentifier) node);
     }
+    if (node instanceof SqlNullTreatment) {
+      return getValidatedNodeType(((SqlNullTreatment) node).value);
+    }
     return null;
   }
 
@@ -6021,7 +6024,7 @@ public class SqlValidatorImpl implements SqlValidatorWithHints {
     }
 
     @Override public RelDataType visit(SqlNullTreatment nullTreatment) {
-      return unknownType;
+      return typeFactory.createSqlNullTreatmentType(nullTreatment);
     }
 
     @Override public RelDataType visit(SqlColumnAttribute attribute) {
