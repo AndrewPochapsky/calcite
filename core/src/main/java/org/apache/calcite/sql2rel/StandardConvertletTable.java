@@ -34,6 +34,7 @@ import org.apache.calcite.sql.SqlBinaryOperator;
 import org.apache.calcite.sql.SqlCall;
 import org.apache.calcite.sql.SqlDataTypeSpec;
 import org.apache.calcite.sql.SqlFunction;
+import org.apache.calcite.sql.SqlNullTreatment;
 import org.apache.calcite.sql.SqlFunctionCategory;
 import org.apache.calcite.sql.SqlIdentifier;
 import org.apache.calcite.sql.SqlIntervalLiteral;
@@ -818,6 +819,10 @@ public class StandardConvertletTable extends ReflectiveConvertletTable {
       List<SqlNode> nodes, SqlOperandTypeChecker.Consistency consistency) {
     final List<RexNode> exprs = new ArrayList<>();
     for (SqlNode node : nodes) {
+      if (node instanceof SqlNullTreatment) {
+        SqlNullTreatment nullTreatment = (SqlNullTreatment) node;
+        exprs.add(cx.convertExpression(nullTreatment.value));
+      }
       exprs.add(cx.convertExpression(node));
     }
     if (exprs.size() > 1) {

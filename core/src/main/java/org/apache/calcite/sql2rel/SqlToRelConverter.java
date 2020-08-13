@@ -4995,6 +4995,10 @@ public class SqlToRelConverter {
       return exprConverter.convertInterval(this, intervalQualifier);
     }
 
+    public RexNode convertNullTreatment(SqlNullTreatment nullTreatment) {
+      return exprConverter.convertNullTreatment(this, nullTreatment);
+    }
+
     public RexNode visit(SqlLiteral literal) {
       return exprConverter.convertLiteral(this, literal);
     }
@@ -5034,7 +5038,7 @@ public class SqlToRelConverter {
     }
 
     @Override public RexNode visit(SqlNullTreatment nullTreatment) {
-      throw new UnsupportedOperationException();
+      return convertNullTreatment(nullTreatment);
     }
 
     @Override public RexNode visit(SqlColumnAttribute attribute) {

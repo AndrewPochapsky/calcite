@@ -30,6 +30,7 @@ import org.apache.calcite.runtime.FlatLists;
 import org.apache.calcite.sql.SqlAggFunction;
 import org.apache.calcite.sql.SqlCollation;
 import org.apache.calcite.sql.SqlIntervalQualifier;
+import org.apache.calcite.sql.SqlNullTreatment;
 import org.apache.calcite.sql.SqlKind;
 import org.apache.calcite.sql.SqlOperator;
 import org.apache.calcite.sql.SqlSpecialOperator;
@@ -1211,6 +1212,15 @@ public class RexBuilder {
       SqlIntervalQualifier intervalQualifier) {
     assert intervalQualifier != null;
     return makeFlag(intervalQualifier.timeUnitRange);
+  }
+
+  /**
+   * TODO
+   */
+  public RexLiteral makeNullTreatmentLiteral(
+      SqlNullTreatment nullTreatment) {
+    assert nullTreatment != null;
+    return makeFlag(nullTreatment.nullOption);
   }
 
   /**

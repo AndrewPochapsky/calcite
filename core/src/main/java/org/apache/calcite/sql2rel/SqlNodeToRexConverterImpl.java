@@ -25,6 +25,7 @@ import org.apache.calcite.rex.RexNode;
 import org.apache.calcite.sql.SqlCall;
 import org.apache.calcite.sql.SqlIntervalLiteral;
 import org.apache.calcite.sql.SqlIntervalQualifier;
+import org.apache.calcite.sql.SqlNullTreatment;
 import org.apache.calcite.sql.SqlLiteral;
 import org.apache.calcite.sql.SqlTimeLiteral;
 import org.apache.calcite.sql.SqlTimestampLiteral;
@@ -74,6 +75,14 @@ public class SqlNodeToRexConverterImpl implements SqlNodeToRexConverter {
     RexBuilder rexBuilder = cx.getRexBuilder();
 
     return rexBuilder.makeIntervalLiteral(intervalQualifier);
+  }
+
+  public RexLiteral convertNullTreatment(
+      SqlRexContext cx,
+      SqlNullTreatment nullTreatment) {
+    RexBuilder rexBuilder = cx.getRexBuilder();
+
+    return rexBuilder.makeNullTreatmentLiteral(nullTreatment);
   }
 
   public RexNode convertLiteral(
