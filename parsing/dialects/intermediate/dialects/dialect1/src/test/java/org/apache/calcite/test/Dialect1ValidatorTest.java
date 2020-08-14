@@ -21,11 +21,17 @@ import org.apache.calcite.sql.test.SqlTestFactory;
 import org.apache.calcite.sql.test.SqlTester;
 import org.apache.calcite.sql.test.SqlValidatorTester;
 
+import org.junit.jupiter.api.Test;
+
 public class Dialect1ValidatorTest extends SqlValidatorTest {
 
   @Override public SqlTester getTester() {
     return new SqlValidatorTester(
         SqlTestFactory.INSTANCE
             .with("parserFactory", Dialect1ParserImpl.FACTORY));
+  }
+
+  @Test public void testCreateTable() {
+    sql("CREATE TABLE FOO").ok();
   }
 }
