@@ -2397,8 +2397,6 @@ public class SqlValidatorImpl implements SqlValidatorWithHints {
           forceNullable);
       return newNode;
 
-    case CREATE_TABLE:
-      return newNode;
     case OVER:
       if (!shouldAllowOverRelation()) {
         throw Util.unexpected(kind);
@@ -2585,6 +2583,8 @@ public class SqlValidatorImpl implements SqlValidatorWithHints {
     SqlCall call;
     List<SqlNode> operands;
     switch (node.getKind()) {
+    case CREATE_TABLE:
+      return;
     case SELECT:
       final SqlSelect select = (SqlSelect) node;
       final SelectNamespace selectNs =
