@@ -2397,15 +2397,8 @@ public class SqlValidatorImpl implements SqlValidatorWithHints {
           forceNullable);
       return newNode;
 
-    case CREATE:
-      registerQuery(
-          parentScope,
-          register ? usingScope : null,
-          node,
-          enclosingNode,
-          alias,
-          forceNullable);
-      break;
+    case CREATE_TABLE:
+      return newNode;
     case OVER:
       if (!shouldAllowOverRelation()) {
         throw Util.unexpected(kind);
