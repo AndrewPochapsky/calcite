@@ -1307,6 +1307,11 @@ public class SqlValidatorImpl implements SqlValidatorWithHints {
             catalogReader.nameMatcher());
         if (overloads.size() == 1) {
           ((SqlBasicCall) call).setOperator(overloads.get(0));
+        } else {
+          List<SqlOperator> others = new ArrayList<>();
+          catalogReader.lookupOperatorOverloads(function.getNameAsId(),
+              function.getFunctionType(), SqlSyntax.FUNCTION, overloads,
+              catalogReader.nameMatcher());
         }
       }
       if (config.callRewrite()) {
