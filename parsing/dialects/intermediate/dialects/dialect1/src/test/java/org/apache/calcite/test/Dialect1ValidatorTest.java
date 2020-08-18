@@ -137,7 +137,7 @@ public class Dialect1ValidatorTest extends SqlValidatorTestCase {
         + "return 'str'";
     String query = "select foo()";
     sql(ddl).ok();
-    sql(ddl2).ok();
+    sql(ddl).ok();
     sql(query).type("");
   }
 
