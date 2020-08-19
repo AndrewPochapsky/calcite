@@ -35,7 +35,7 @@ public class FunctionParameterImpl implements FunctionParameter {
   /**
    * Creates a {@code FunctionParameterImpl}.
    *
-   * @param ordinal The index of the paramter
+   * @param ordinal The index of the parameter
    * @param name The name of the parameter
    * @param type The type of the parameter
    * @param optional Whether or not the parameter is optional
@@ -69,7 +69,10 @@ public class FunctionParameterImpl implements FunctionParameter {
       return false;
     }
     FunctionParameterImpl other = (FunctionParameterImpl) obj;
+    // Name is intentionally not used to allow updating the name of an existing
+    // function parameter.
     return ordinal == other.getOrdinal()
-        && type.getFullTypeString().equals(other.type.getFullTypeString());
+        && type.getFullTypeString().equals(other.type.getFullTypeString())
+        && optional == other.isOptional();
   }
 }
