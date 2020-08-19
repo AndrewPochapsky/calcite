@@ -24,11 +24,21 @@ import org.apache.calcite.schema.ScalarFunction;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Implementation of {@code ScalarFunction} used for functions created using
+ * CREATE FUNCTION statements.
+ */
 public class UserDefinedFunction implements ScalarFunction {
 
   private final List<FunctionParameter> parameters;
   private final RelDataType returnType;
 
+  /**
+   * Creates a {@code UserDefinedFunction}.
+   *
+   * @param parameters The parameters of the function
+   * @param returnType The return type of the created function
+   */
   public UserDefinedFunction(List<FunctionParameter> parameters,
       RelDataType returnType) {
     this.parameters = Objects.requireNonNull(parameters);
@@ -48,6 +58,8 @@ public class UserDefinedFunction implements ScalarFunction {
       return false;
     }
     UserDefinedFunction other = (UserDefinedFunction) obj;
+    // Return type excluded intentionally. This is to allow updating the return
+    // type of existing functions.
     return parameters.equals(other.getParameters());
   }
 }

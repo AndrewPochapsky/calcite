@@ -26,7 +26,9 @@ import org.apache.calcite.sql.validate.SqlNameMatcher;
 import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * ChainedSqlOperatorTable implements the {@link SqlOperatorTable} interface by
@@ -48,12 +50,12 @@ public class ChainedSqlOperatorTable implements SqlOperatorTable {
 
   /** Creates a {@code ChainedSqlOperatorTable}. */
   public static SqlOperatorTable of(SqlOperatorTable... tables) {
-    List<SqlOperatorTable> operatorTables = new ArrayList<>();
+    Set<SqlOperatorTable> operatorTables = new LinkedHashSet<>();
     for (SqlOperatorTable table : tables) {
       if (table instanceof ChainedSqlOperatorTable) {
         ChainedSqlOperatorTable chainedTable = (ChainedSqlOperatorTable) table;
-        operatorTables.addAll(chainedTable.tableList);
-      } else {
+        addAll(operatorTables, chainedTable);
+      } else if (!operatorTables.contains(table)){
         operatorTables.add(table);
       }
     }
@@ -61,6 +63,22 @@ public class ChainedSqlOperatorTable implements SqlOperatorTable {
   }
 
   //~ Methods ----------------------------------------------------------------
+
+  /**
+   * Adds all operator tables in {@code chainedTable.tableList} to
+   * {@code operatorTables} if it is not already present.
+   *
+   * @param operatorTables The operator tables to add to
+   * @param chainedTable The chained table to add from
+   */
+  private static void addAll(Set<SqlOperatorTable> operatorTables,
+      ChainedSqlOperatorTable chainedTable) {
+    for (SqlOperatorTable table : chainedTable.tableList) {
+      if (!operatorTables.contains(table)) {
+        operatorTables.add(table);
+      }
+    }
+  }
 
   /**
    * Adds an underlying table. The order in which tables are added is

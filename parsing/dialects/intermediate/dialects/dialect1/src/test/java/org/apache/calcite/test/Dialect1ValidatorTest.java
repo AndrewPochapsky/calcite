@@ -125,17 +125,17 @@ public class Dialect1ValidatorTest extends SqlValidatorTestCase {
   }
 
   @Test public void testCreateFunctionOverrwrite() {
-    String ddl = "create function foo() "
+    String ddl = "create function foo(x integer) "
         + "returns Integer "
         + "language sql "
         + "collation invoker inline type 1 "
         + "return 1";
-    String ddl2 = "create function foo() "
+    String ddl2 = "create function foo(x integer) "
         + "returns varchar "
         + "language sql "
         + "collation invoker inline type 1 "
         + "return 'str'";
-    String query = "select foo()";
+    String query = "select foo(1)";
     sql(ddl).ok();
     sql(query).type("RecordType(INTEGER NOT NULL EXPR$0) NOT NULL");
     sql(ddl2).ok();

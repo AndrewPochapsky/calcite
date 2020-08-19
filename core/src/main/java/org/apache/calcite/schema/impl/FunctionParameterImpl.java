@@ -22,6 +22,9 @@ import org.apache.calcite.schema.FunctionParameter;
 
 import java.util.Objects;
 
+/**
+ * Implementation of {@code FunctionParameter}.
+ */
 public class FunctionParameterImpl implements FunctionParameter {
 
   private final int ordinal;
@@ -29,6 +32,14 @@ public class FunctionParameterImpl implements FunctionParameter {
   public final RelDataType type;
   private final boolean optional;
 
+  /**
+   * Creates a {@code FunctionParameterImpl}.
+   *
+   * @param ordinal The index of the paramter
+   * @param name The name of the parameter
+   * @param type The type of the parameter
+   * @param optional Whether or not the parameter is optional
+   */
   public FunctionParameterImpl(int ordinal, String name, RelDataType type,
       boolean optional) {
     this.ordinal = ordinal;
