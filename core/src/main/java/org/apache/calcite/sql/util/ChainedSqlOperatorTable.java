@@ -23,8 +23,9 @@ import org.apache.calcite.sql.SqlOperatorTable;
 import org.apache.calcite.sql.SqlSyntax;
 import org.apache.calcite.sql.validate.SqlNameMatcher;
 
+import com.google.common.collect.ImmutableList;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -42,12 +43,21 @@ public class ChainedSqlOperatorTable implements SqlOperatorTable {
    * Creates a table based on a given list.
    */
   public ChainedSqlOperatorTable(List<SqlOperatorTable> tableList) {
-    this.tableList = new ArrayList<>(tableList);
+    this.tableList = ImmutableList.copyOf(tableList);
   }
 
   /** Creates a {@code ChainedSqlOperatorTable}. */
   public static SqlOperatorTable of(SqlOperatorTable... tables) {
-    return new ChainedSqlOperatorTable(Arrays.asList(tables));
+    List<SqlOperatorTable> operatorTables = new ArrayList<>();
+    for (SqlOperatorTable table : tables) {
+      if (table instanceof ChainedSqlOperatorTable) {
+        ChainedSqlOperatorTable chainedTable = (ChainedSqlOperatorTable) table;
+        operatorTables.addAll(chainedTable.tableList);
+      } else {
+        operatorTables.add(table);
+      }
+    }
+    return new ChainedSqlOperatorTable(ImmutableList.copyOf(operatorTables));
   }
 
   //~ Methods ----------------------------------------------------------------

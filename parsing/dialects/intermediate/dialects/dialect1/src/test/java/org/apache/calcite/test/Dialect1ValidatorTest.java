@@ -137,8 +137,9 @@ public class Dialect1ValidatorTest extends SqlValidatorTestCase {
         + "return 'str'";
     String query = "select foo()";
     sql(ddl).ok();
-    sql(ddl).ok();
-    sql(query).type("");
+    sql(query).type("RecordType(INTEGER NOT NULL EXPR$0) NOT NULL");
+    sql(ddl2).ok();
+    sql(query).type("RecordType(VARCHAR NOT NULL EXPR$0) NOT NULL");
   }
 
   @Test public void testCreateFunctionWrongTypeGetsCasted() {

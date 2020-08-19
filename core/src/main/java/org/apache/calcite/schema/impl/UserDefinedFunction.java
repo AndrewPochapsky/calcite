@@ -42,4 +42,12 @@ public class UserDefinedFunction implements ScalarFunction {
   @Override public List<FunctionParameter> getParameters() {
     return parameters;
   }
+
+  @Override public boolean equals(Object obj) {
+    if (!(obj instanceof UserDefinedFunction)) {
+      return false;
+    }
+    UserDefinedFunction other = (UserDefinedFunction) obj;
+    return parameters.equals(other.getParameters());
+  }
 }

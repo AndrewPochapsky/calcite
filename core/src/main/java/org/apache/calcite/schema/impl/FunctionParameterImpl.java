@@ -26,7 +26,7 @@ public class FunctionParameterImpl implements FunctionParameter {
 
   private final int ordinal;
   private final String name;
-  private final RelDataType type;
+  public final RelDataType type;
   private final boolean optional;
 
   public FunctionParameterImpl(int ordinal, String name, RelDataType type,
@@ -51,5 +51,14 @@ public class FunctionParameterImpl implements FunctionParameter {
 
   @Override public boolean isOptional() {
     return optional;
+  }
+
+  @Override public boolean equals(Object obj) {
+    if (!(obj instanceof FunctionParameterImpl)) {
+      return false;
+    }
+    FunctionParameterImpl other = (FunctionParameterImpl) obj;
+    return ordinal == other.getOrdinal()
+        && type.getFullTypeString().equals(other.type.getFullTypeString());
   }
 }
