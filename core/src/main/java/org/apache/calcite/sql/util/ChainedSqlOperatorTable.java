@@ -65,8 +65,8 @@ public class ChainedSqlOperatorTable implements SqlOperatorTable {
   //~ Methods ----------------------------------------------------------------
 
   /**
-   * Adds all operator tables in {@code chainedTable.tableList} to
-   * {@code operatorTables} if it is not already present.
+   * Adds all non-duplicate operator tables in {@code chainedTable.tableList}
+   * to {@code operatorTables}.
    *
    * @param operatorTables The operator tables to add to
    * @param chainedTable The chained table to add from

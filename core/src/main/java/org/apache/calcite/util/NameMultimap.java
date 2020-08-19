@@ -58,8 +58,8 @@ public class NameMultimap<V> {
   }
 
   /**
-   * Creates a NameMultimap, initially empty and allows specification of if
-   * duplicates are allowed with the list of a key.
+   * Creates a NameMultimap, initially empty, and allows specification of if
+   * duplicates are allowed for a key's value.
    *
    * @param allowsDuplicates Whether or not the value of a key can contain
    *                         duplicate entries

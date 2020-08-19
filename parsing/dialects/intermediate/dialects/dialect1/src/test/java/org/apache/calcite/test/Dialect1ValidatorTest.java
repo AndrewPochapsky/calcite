@@ -124,7 +124,7 @@ public class Dialect1ValidatorTest extends SqlValidatorTestCase {
     sql(query).type("RecordType(INTEGER NOT NULL EXPR$0) NOT NULL");
   }
 
-  @Test public void testCreateFunctionOverrwrite() {
+  @Test public void testCreateFunctionOverwrite() {
     String ddl = "create function foo(x integer) "
         + "returns Integer "
         + "language sql "
