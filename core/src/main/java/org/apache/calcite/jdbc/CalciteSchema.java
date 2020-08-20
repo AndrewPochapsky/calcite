@@ -97,7 +97,7 @@ public abstract class CalciteSchema {
       this.subSchemaMap = Objects.requireNonNull(subSchemaMap);
     }
     if (functionMap == null) {
-      this.functionMap = new NameMultimap<>(/*allowsDuplicates=*/ false);
+      this.functionMap = new NameMultimap<>(false);
       this.functionNames = new NameSet();
       this.nullaryFunctionMap = new NameMap<>();
     } else {
