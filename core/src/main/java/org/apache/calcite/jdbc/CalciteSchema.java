@@ -49,6 +49,7 @@ import java.util.NavigableMap;
 import java.util.NavigableSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.LinkedHashSet;
 import javax.sql.DataSource;
 
 /**
@@ -64,7 +65,7 @@ public abstract class CalciteSchema {
   /** Tables explicitly defined in this schema. Does not include tables in
    *  {@link #schema}. */
   protected final NameMap<TableEntry> tableMap;
-  protected final NameMultimap<FunctionEntry> functionMap;
+  protected final NameMap<Set<FunctionEntry>> functionMap;
   protected final NameMap<TypeEntry> typeMap;
   protected final NameMap<LatticeEntry> latticeMap;
   protected final NameSet functionNames;
@@ -75,7 +76,7 @@ public abstract class CalciteSchema {
   protected CalciteSchema(CalciteSchema parent, Schema schema,
       String name, NameMap<CalciteSchema> subSchemaMap,
       NameMap<TableEntry> tableMap, NameMap<LatticeEntry> latticeMap, NameMap<TypeEntry> typeMap,
-      NameMultimap<FunctionEntry> functionMap, NameSet functionNames,
+      NameMap<Set<FunctionEntry>> functionMap, NameSet functionNames,
       NameMap<FunctionEntry> nullaryFunctionMap,
       List<? extends List<String>> path) {
     this.parent = parent;
@@ -97,7 +98,7 @@ public abstract class CalciteSchema {
       this.subSchemaMap = Objects.requireNonNull(subSchemaMap);
     }
     if (functionMap == null) {
-      this.functionMap = new NameMultimap<>(/*allowsDuplicates=*/ false);
+      this.functionMap = new NameMap<>();
       this.functionNames = new NameSet();
       this.nullaryFunctionMap = new NameMap<>();
     } else {
@@ -207,7 +208,10 @@ public abstract class CalciteSchema {
   public FunctionEntry add(String name, Function function) {
     final FunctionEntryImpl entry =
         new FunctionEntryImpl(this, name, function);
-    functionMap.put(name, entry);
+    Set<FunctionEntry> set = functionMap.map().computeIfAbsent(name,
+        k -> new LinkedHashSet<>());
+    set.remove(entry);
+    set.add(entry);
     functionNames.add(name);
     if (function.getParameters().isEmpty()) {
       nullaryFunctionMap.put(name, entry);
@@ -376,10 +380,11 @@ public abstract class CalciteSchema {
    * name. Never null. */
   public final Collection<Function> getFunctions(String name, boolean caseSensitive) {
     final ImmutableList.Builder<Function> builder = ImmutableList.builder();
-    // Add explicit functions.
-    for (FunctionEntry functionEntry
-        : Pair.right(functionMap.range(name, caseSensitive))) {
-      builder.add(functionEntry.getFunction());
+    if (functionMap.containsKey(name, caseSensitive)) {
+      // Add explicit functions.
+      for (FunctionEntry functionEntry : functionMap.map().get(name)) {
+        builder.add(functionEntry.getFunction());
+      }
     }
     // Add implicit functions.
     addImplicitFunctionsToBuilder(builder, name, caseSensitive);
@@ -538,7 +543,9 @@ public abstract class CalciteSchema {
     if (remove == null) {
       return false;
     }
-    functionMap.remove(name, remove);
+    if (functionMap.containsKey(name, false)) {
+      functionMap.map().get(name).remove(remove);
+    }
     return true;
   }
 
