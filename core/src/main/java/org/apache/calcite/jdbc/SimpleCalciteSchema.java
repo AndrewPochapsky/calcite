@@ -23,7 +23,6 @@ import org.apache.calcite.schema.SchemaVersion;
 import org.apache.calcite.schema.Table;
 import org.apache.calcite.schema.TableMacro;
 import org.apache.calcite.util.NameMap;
-import org.apache.calcite.util.NameMultimap;
 import org.apache.calcite.util.NameSet;
 
 import com.google.common.collect.ImmutableList;
@@ -31,8 +30,8 @@ import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.ImmutableSortedSet;
 
 import java.util.Collection;
-import java.util.Set;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A concrete implementation of {@link org.apache.calcite.jdbc.CalciteSchema}

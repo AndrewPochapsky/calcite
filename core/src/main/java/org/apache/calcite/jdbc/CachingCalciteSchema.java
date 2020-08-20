@@ -23,7 +23,6 @@ import org.apache.calcite.schema.SchemaVersion;
 import org.apache.calcite.schema.Table;
 import org.apache.calcite.schema.TableMacro;
 import org.apache.calcite.util.NameMap;
-import org.apache.calcite.util.NameMultimap;
 import org.apache.calcite.util.NameSet;
 
 import com.google.common.cache.CacheBuilder;
