@@ -207,6 +207,10 @@ public abstract class CalciteSchema {
   public FunctionEntry add(String name, Function function) {
     final FunctionEntryImpl entry =
         new FunctionEntryImpl(this, name, function);
+    Collection<Function> functions = getFunctions(name, false);
+    if (functions.contains(function)) {
+      throw new IllegalStateException("No duplicates allowed");
+    }
     functionMap.put(name, entry);
     functionNames.add(name);
     if (function.getParameters().isEmpty()) {

@@ -166,7 +166,17 @@ public class Dialect1ValidatorTest extends SqlValidatorTestCase {
     String query = "select foo(1)";
     sql(ddl).ok();
     sql(query).type("RecordType(INTEGER NOT NULL EXPR$0) NOT NULL");
-    sql(ddl2).ok();
+    sql(ddl2).fails("No duplicates allowed");
+  }
+
+  @Test public void testCreateFunctionVarchar() {
+    String ddl = "create function foo(x integer) "
+        + "returns varchar "
+        + "language sql "
+        + "collation invoker inline type 1 "
+        + "return 'str'";
+    String query = "select foo(1)";
+    sql(ddl).ok();
     sql(query).type("RecordType(VARCHAR NOT NULL EXPR$0) NOT NULL");
   }
 
