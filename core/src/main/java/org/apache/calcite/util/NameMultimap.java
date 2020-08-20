@@ -36,22 +36,15 @@ import static org.apache.calcite.util.CaseInsensitiveComparator.COMPARATOR;
 public class NameMultimap<V> {
   private final NameMap<List<V>> map;
 
-  /**
-   * Creates a NameMultimap based on an existing map.
-   *
-   * @param map The existing map
-   */
+  /** Creates a NameMultimap based on an existing map. */
   private NameMultimap(NameMap<List<V>> map) {
     this.map = map;
     assert map.map().comparator() == COMPARATOR;
   }
 
-  /**
-   * Creates a NameMultimap, initially empty. By default duplicates are
-   * allowed
-   */
+  /** Creates a NameMultimap, initially empty. */
   public NameMultimap() {
-    this(new NameMap<>(), /*allowsDuplicates=*/ true);
+    this(new NameMap<>());
   }
 
   @Override public String toString() {
@@ -68,10 +61,7 @@ public class NameMultimap<V> {
         && map.equals(((NameMultimap) obj).map);
   }
 
-  /**
-   * Adds an entry to this multimap. If allowsDuplicates is true, then the
-   * existing entry will be overwritten.
-   */
+  /** Adds an entry to this multimap. */
   public void put(String name, V v) {
     List<V> list = map().computeIfAbsent(name, k -> new ArrayList<>());
     list.add(v);
