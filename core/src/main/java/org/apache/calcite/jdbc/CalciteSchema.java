@@ -209,7 +209,8 @@ public abstract class CalciteSchema {
         new FunctionEntryImpl(this, name, function);
     Collection<Function> functions = getFunctions(name, false);
     if (functions.contains(function)) {
-      throw new IllegalStateException("No duplicates allowed");
+      throw new IllegalStateException("Error: a function of this name with "
+          + "the same parameters already exists");
     }
     functionMap.put(name, entry);
     functionNames.add(name);
