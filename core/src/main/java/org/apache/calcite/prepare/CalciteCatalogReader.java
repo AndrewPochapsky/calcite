@@ -408,7 +408,7 @@ public class CalciteCatalogReader implements Prepare.CatalogReader {
   private static SqlReturnTypeInference infer(final Procedure procedure) {
     return opBinding -> {
       final RelDataTypeFactory typeFactory = opBinding.getTypeFactory();
-      final RelDataType type = typeFactory.createUnknownType();
+      final RelDataType type = typeFactory.createSqlType(SqlTypeName.ANY);
       return toSql(typeFactory, type);
     };
   }
