@@ -240,6 +240,13 @@ public class Dialect1ValidatorTest extends SqlValidatorTestCase {
     sql(query).fails("No match found for function signature BAR\\(<NUMERIC>\\)");
   }
 
+  @Test public void testCreateProcedureSchema() {
+    String ddl = "CREATE PROCEDURE foo() select a from abc";
+    String query = "CALL foo()";
+    sql(ddl).ok();
+    sql(query).ok();
+  }
+
   @Test public void testCreateProcedureBeginEndLabel() {
     String sql = "create procedure foo()\n"
         + "label1: begin\n"

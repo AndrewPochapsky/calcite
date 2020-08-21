@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.EnumSet;
 
 import static org.apache.calcite.sql.SqlFunctionCategory.Property.FUNCTION;
+import static org.apache.calcite.sql.SqlFunctionCategory.Property.PROCEDURE;
 import static org.apache.calcite.sql.SqlFunctionCategory.Property.SPECIFIC;
 import static org.apache.calcite.sql.SqlFunctionCategory.Property.TABLE_FUNCTION;
 import static org.apache.calcite.sql.SqlFunctionCategory.Property.USER_DEFINED;
@@ -37,7 +38,7 @@ public enum SqlFunctionCategory {
   SYSTEM("SYSTEM", "System function", FUNCTION),
   USER_DEFINED_FUNCTION("UDF", "User-defined function", USER_DEFINED,
       FUNCTION),
-  USER_DEFINED_PROCEDURE("UDP", "User-defined procedure", USER_DEFINED),
+  USER_DEFINED_PROCEDURE("UDP", "User-defined procedure", USER_DEFINED, PROCEDURE),
   USER_DEFINED_CONSTRUCTOR("UDC", "User-defined constructor", USER_DEFINED),
   USER_DEFINED_SPECIFIC_FUNCTION("UDF_SPECIFIC",
       "User-defined function with SPECIFIC name", USER_DEFINED, SPECIFIC,
@@ -66,6 +67,14 @@ public enum SqlFunctionCategory {
     return properties.contains(TABLE_FUNCTION);
   }
 
+  public boolean isUserDefinedFunction() {
+    return isUserDefined() && isFunction();
+  }
+
+  public boolean isUserDefinedProcedure() {
+    return isUserDefined() && properties.contains(PROCEDURE);
+  }
+
   public boolean isFunction() {
     return properties.contains(FUNCTION);
   }
@@ -84,6 +93,6 @@ public enum SqlFunctionCategory {
    * Property of a SqlFunctionCategory.
    */
   enum Property {
-    USER_DEFINED, TABLE_FUNCTION, SPECIFIC, FUNCTION
+    USER_DEFINED, TABLE_FUNCTION, SPECIFIC, FUNCTION, PROCEDURE
   }
 }

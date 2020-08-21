@@ -22,8 +22,8 @@ import java.util.List;
 /**
  * Schema class for all user defined procedures.
  */
-public class Procedure {
-  public final List<FunctionParameter> parameters;
+public class Procedure implements Function {
+  private final List<FunctionParameter> parameters;
 
   /**
    * Creates a {@code Procedure}.
@@ -32,5 +32,9 @@ public class Procedure {
    */
   public Procedure(List<FunctionParameter> parameters) {
     this.parameters = Objects.requireNonNull(parameters);
+  }
+
+  public List<FunctionParameter> getParameters() {
+    return parameters;
   }
 }
