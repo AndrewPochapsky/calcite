@@ -212,10 +212,6 @@ public abstract class CalciteSchema {
   }
 
   public FunctionEntry add(String name, Function function) {
-    if (function instanceof Procedure) {
-      add(name, (Procedure) function);
-      return null;
-    }
     final FunctionEntryImpl entry =
         new FunctionEntryImpl(this, name, function);
     Collection<Function> functions = getFunctions(name, false);

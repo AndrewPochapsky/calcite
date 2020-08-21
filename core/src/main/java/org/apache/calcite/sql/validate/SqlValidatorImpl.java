@@ -1782,6 +1782,12 @@ public class SqlValidatorImpl implements SqlValidatorWithHints {
     }
     if (node instanceof SqlIdentifier) {
       return getCatalogReader().getNamedType((SqlIdentifier) node);
+    } else if (node instanceof SqlBasicCall) {
+      SqlBasicCall call = (SqlBasicCall) node;
+      if (call.getOperator().kind == SqlKind.PROCEDURE_CALL) {
+        Preconditions.checkArgument(call.operandCount() == 1);
+        return getValidatedNodeType(call.operands[0]);
+      }
     }
     return null;
   }
