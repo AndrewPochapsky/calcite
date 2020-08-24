@@ -3384,7 +3384,8 @@ public class SqlValidatorImpl implements SqlValidatorWithHints {
       }
       SqlBasicTypeNameSpec basicTypeNameSpec =
           (SqlBasicTypeNameSpec) typeNameSpec;
-      builder.add(col.name.toString(), basicTypeNameSpec.sqlTypeName);
+      builder.add(col.name.toString(), basicTypeNameSpec.sqlTypeName,
+          col.dataType.getColumnAttributes());
     }
     schema.add(createTable.name.toString(),
         new ExplicitRowTypeTable(builder.build()));

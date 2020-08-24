@@ -471,9 +471,7 @@ public interface RelDataTypeFactory {
      * Adds a field with given name and type.
      */
     public Builder add(String name, RelDataType type) {
-      names.add(name);
-      types.add(type);
-      attributes.add(new ArrayList<>());
+      add(name, type, new ArrayList<>());
       return this;
     }
 
@@ -494,6 +492,12 @@ public interface RelDataTypeFactory {
      */
     public Builder add(String name, SqlTypeName typeName) {
       add(name, typeFactory.createSqlType(typeName));
+      return this;
+    }
+
+    public Builder add(String name, SqlTypeName typeName,
+        List<SqlColumnAttribute> columnAttributes) {
+      add(name, typeFactory.createSqlType(typeName), columnAttributes);
       return this;
     }
 
@@ -585,7 +589,7 @@ public interface RelDataTypeFactory {
      * Creates a struct type with the current contents of this builder.
      */
     public RelDataType build() {
-      return typeFactory.createStructType(kind, types, names);
+      return typeFactory.createStructType(kind, types, names, attributes);
     }
 
     /** Creates a dynamic struct type with the current contents of this

@@ -357,6 +357,13 @@ public class Dialect1ValidatorTest extends SqlValidatorTestCase {
     assertThat(beginEnd, sameInstance(leaveStmt.labeledBlock));
   }
 
+  @Test public void testCreateTableColumnAttributes() {
+    String ddl = "create table foo (x varchar casespecific)";
+    String query = "select x from foo";
+    sql(ddl).ok();
+    sql(query).type("RecordType(VARCHAR NOT NULL X) NOT NULL");
+  }
+
   @Test public void testCreateTableNoColumns() {
     String ddl = "create table foo";
     String query = "select * from foo";
