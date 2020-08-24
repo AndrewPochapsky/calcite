@@ -316,7 +316,7 @@ public abstract class RelDataTypeFactoryImpl implements RelDataTypeFactory {
             return type.getFieldCount();
           }
         },
-        type.getFieldNames(), nullable);
+        type.getFieldNames(), nullable, new ArrayList<>());
   }
 
   // implement RelDataTypeFactory

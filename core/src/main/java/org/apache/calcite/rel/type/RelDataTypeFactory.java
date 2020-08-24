@@ -18,6 +18,7 @@ package org.apache.calcite.rel.type;
 
 import org.apache.calcite.avatica.util.TimeUnit;
 import org.apache.calcite.sql.SqlCollation;
+import org.apache.calcite.sql.SqlColumnAttribute;
 import org.apache.calcite.sql.SqlIntervalQualifier;
 import org.apache.calcite.sql.parser.SqlParserPos;
 import org.apache.calcite.sql.type.SqlTypeName;
@@ -88,7 +89,7 @@ public interface RelDataTypeFactory {
       List<RelDataType> typeList,
       List<String> fieldNameList);
 
-  RelDataType createStructType(StructKind kind
+  RelDataType createStructType(StructKind kind,
       List<RelDataType> typeList,
       List<String> fieldNameList,
       List<List<SqlColumnAttribute>> attributes);
