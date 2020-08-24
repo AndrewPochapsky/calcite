@@ -88,6 +88,11 @@ public interface RelDataTypeFactory {
       List<RelDataType> typeList,
       List<String> fieldNameList);
 
+  RelDataType createStructType(StructKind kind
+      List<RelDataType> typeList,
+      List<String> fieldNameList,
+      List<List<SqlColumnAttribute>> attributes);
+
   /**
    * Creates a type that represents a structured collection of fields,
    * obtaining the field information via a callback.

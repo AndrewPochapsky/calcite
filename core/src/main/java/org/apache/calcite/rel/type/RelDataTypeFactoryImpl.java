@@ -22,6 +22,7 @@ import org.apache.calcite.sql.type.JavaToSqlTypeConversionRules;
 import org.apache.calcite.sql.type.SqlTypeFamily;
 import org.apache.calcite.sql.type.SqlTypeName;
 import org.apache.calcite.sql.type.SqlTypeUtil;
+import org.apache.calcite.sql.SqlColumnAttribute;
 import org.apache.calcite.util.Util;
 
 import com.google.common.cache.CacheBuilder;
@@ -137,22 +138,31 @@ public abstract class RelDataTypeFactoryImpl implements RelDataTypeFactory {
       final List<RelDataType> typeList,
       final List<String> fieldNameList) {
     return createStructType(StructKind.FULLY_QUALIFIED, typeList,
-        fieldNameList);
+        fieldNameList, false, new ArrayList<>());
+  }
+
+  public RelDataType createStructType(StructKind kind,
+      final List<RelDataType> typeList,
+      final List<String> fieldNameList,
+      final List<List<SqlColumnAttribute>> attributes) {
+    return createStructType(kind, typeList,
+        fieldNameList, false, attributes);
   }
 
   public RelDataType createStructType(StructKind kind,
       final List<RelDataType> typeList,
       final List<String> fieldNameList) {
     return createStructType(kind, typeList,
-        fieldNameList, false);
+        fieldNameList, false, new ArrayList<>());
   }
 
   private RelDataType createStructType(StructKind kind,
       final List<RelDataType> typeList,
       final List<String> fieldNameList,
-      final boolean nullable) {
+      final boolean nullable,
+      final List<List<SqlColumnAttribute>> attributes) {
     assert typeList.size() == fieldNameList.size();
-    return canonize(kind, fieldNameList, typeList, nullable);
+    return canonize(kind, fieldNameList, typeList, nullable, attributes);
   }
 
   @SuppressWarnings("deprecation")
@@ -363,21 +373,31 @@ public abstract class RelDataTypeFactoryImpl implements RelDataTypeFactory {
   protected RelDataType canonize(final StructKind kind,
       final List<String> names,
       final List<RelDataType> types,
-      final boolean nullable) {
+      final boolean nullable,
+      final List<List<SqlColumnAttribute>> attributes) {
     final RelDataType type = KEY2TYPE_CACHE.getIfPresent(
-        new Key(kind, names, types, nullable));
+        new Key(kind, names, types, nullable, attributes));
     if (type != null) {
       return type;
     }
     final ImmutableList<String> names2 = ImmutableList.copyOf(names);
     final ImmutableList<RelDataType> types2 = ImmutableList.copyOf(types);
-    return KEY2TYPE_CACHE.getUnchecked(new Key(kind, names2, types2, nullable));
+    final ImmutableList<List<SqlColumnAttribute>> attributes2 = ImmutableList.copyOf(attributes);
+    return KEY2TYPE_CACHE.getUnchecked(new Key(kind, names2, types2, nullable,
+          attributes2));
   }
 
   protected RelDataType canonize(final StructKind kind,
       final List<String> names,
       final List<RelDataType> types) {
-    return canonize(kind, names, types, false);
+    return canonize(kind, names, types, false, new ArrayList<>());
+  }
+
+  protected RelDataType canonize(final StructKind kind,
+      final List<String> names,
+      final List<RelDataType> types,
+      final boolean nullable) {
+    return canonize(kind, names, types, nullable, new ArrayList<>());
   }
 
   /**
@@ -655,16 +675,23 @@ public abstract class RelDataTypeFactoryImpl implements RelDataTypeFactory {
     private final List<String> names;
     private final List<RelDataType> types;
     private final boolean nullable;
+    private final List<List<SqlColumnAttribute>> attributes;
 
     Key(StructKind kind, List<String> names, List<RelDataType> types, boolean nullable) {
+      this(kind, names, types, nullable, new ArrayList<>());
+    }
+
+    Key(StructKind kind, List<String> names, List<RelDataType> types,
+        boolean nullable, List<List<SqlColumnAttribute>> attributes) {
       this.kind = kind;
       this.names = names;
       this.types = types;
       this.nullable = nullable;
+      this.attributes = attributes;
     }
 
     @Override public int hashCode() {
-      return Objects.hash(kind, names, types, nullable);
+      return Objects.hash(kind, names, types, nullable, attributes);
     }
 
     @Override public boolean equals(Object obj) {
@@ -673,7 +700,8 @@ public abstract class RelDataTypeFactoryImpl implements RelDataTypeFactory {
           && kind == ((Key) obj).kind
           && names.equals(((Key) obj).names)
           && types.equals(((Key) obj).types)
-          && nullable == ((Key) obj).nullable;
+          && nullable == ((Key) obj).nullable
+          && attributes.equals(((Key) obj).attributes);
     }
   }
 }
