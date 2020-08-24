@@ -71,7 +71,7 @@ public abstract class RelDataTypeFactoryImpl implements RelDataTypeFactory {
     for (int i = 0; i < key.names.size(); i++) {
       list.add(
           new RelDataTypeFieldImpl(
-              key.names.get(i), i, key.types.get(i)));
+              key.names.get(i), i, key.types.get(i), key.attributes.get(i)));
     }
     return new RelRecordType(key.kind, list.build(), key.nullable);
   }
@@ -138,7 +138,7 @@ public abstract class RelDataTypeFactoryImpl implements RelDataTypeFactory {
       final List<RelDataType> typeList,
       final List<String> fieldNameList) {
     return createStructType(StructKind.FULLY_QUALIFIED, typeList,
-        fieldNameList, false, new ArrayList<>());
+        fieldNameList, false, emptyList(typeList.size()));
   }
 
   public RelDataType createStructType(StructKind kind,
@@ -153,7 +153,7 @@ public abstract class RelDataTypeFactoryImpl implements RelDataTypeFactory {
       final List<RelDataType> typeList,
       final List<String> fieldNameList) {
     return createStructType(kind, typeList,
-        fieldNameList, false, new ArrayList<>());
+        fieldNameList, false, emptyList(typeList.size()));
   }
 
   private RelDataType createStructType(StructKind kind,
@@ -162,7 +162,17 @@ public abstract class RelDataTypeFactoryImpl implements RelDataTypeFactory {
       final boolean nullable,
       final List<List<SqlColumnAttribute>> attributes) {
     assert typeList.size() == fieldNameList.size();
+    assert attributes.size() == typeList.size();
     return canonize(kind, fieldNameList, typeList, nullable, attributes);
+  }
+
+  private static List<List<SqlColumnAttribute>> emptyList(int size) {
+    List<List<SqlColumnAttribute>> attributes = new ArrayList<>();
+    while (size > 0) {
+      attributes.add(new ArrayList<>());
+      size--;
+    }
+    return attributes;
   }
 
   @SuppressWarnings("deprecation")
@@ -316,7 +326,7 @@ public abstract class RelDataTypeFactoryImpl implements RelDataTypeFactory {
             return type.getFieldCount();
           }
         },
-        type.getFieldNames(), nullable, new ArrayList<>());
+        type.getFieldNames(), nullable, emptyList(type.getFieldNames().size()));
   }
 
   // implement RelDataTypeFactory
@@ -390,14 +400,14 @@ public abstract class RelDataTypeFactoryImpl implements RelDataTypeFactory {
   protected RelDataType canonize(final StructKind kind,
       final List<String> names,
       final List<RelDataType> types) {
-    return canonize(kind, names, types, false, new ArrayList<>());
+    return canonize(kind, names, types, false, emptyList(types.size()));
   }
 
   protected RelDataType canonize(final StructKind kind,
       final List<String> names,
       final List<RelDataType> types,
       final boolean nullable) {
-    return canonize(kind, names, types, nullable, new ArrayList<>());
+    return canonize(kind, names, types, nullable, emptyList(types.size()));
   }
 
   /**
@@ -678,7 +688,7 @@ public abstract class RelDataTypeFactoryImpl implements RelDataTypeFactory {
     private final List<List<SqlColumnAttribute>> attributes;
 
     Key(StructKind kind, List<String> names, List<RelDataType> types, boolean nullable) {
-      this(kind, names, types, nullable, new ArrayList<>());
+      this(kind, names, types, nullable, emptyList(types.size()));
     }
 
     Key(StructKind kind, List<String> names, List<RelDataType> types,

@@ -17,8 +17,11 @@
 package org.apache.calcite.rel.type;
 
 import org.apache.calcite.sql.type.SqlTypeName;
+import org.apache.calcite.sql.SqlColumnAttribute;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Default implementation of {@link RelDataTypeField}.
@@ -27,6 +30,7 @@ public class RelDataTypeFieldImpl implements RelDataTypeField, Serializable {
   //~ Instance fields --------------------------------------------------------
 
   private final RelDataType type;
+  private final List<SqlColumnAttribute> attributes;
   private final String name;
   private final int index;
 
@@ -39,11 +43,24 @@ public class RelDataTypeFieldImpl implements RelDataTypeField, Serializable {
       String name,
       int index,
       RelDataType type) {
+    this(name, index, type, new ArrayList<>());
+  }
+
+  /**
+   * Creates a RelDataTypeFieldImpl.
+   */
+  public RelDataTypeFieldImpl(
+      String name,
+      int index,
+      RelDataType type,
+      List<SqlColumnAttribute> attributes) {
     assert name != null;
     assert type != null;
+    assert attributes != null;
     this.name = name;
     this.index = index;
     this.type = type;
+    this.attributes = attributes;
   }
 
   //~ Methods ----------------------------------------------------------------
@@ -106,4 +123,7 @@ public class RelDataTypeFieldImpl implements RelDataTypeField, Serializable {
     return type.getSqlTypeName() == SqlTypeName.DYNAMIC_STAR;
   }
 
+  public List<SqlColumnAttribute> getAttributes() {
+    return attributes;
+  }
 }

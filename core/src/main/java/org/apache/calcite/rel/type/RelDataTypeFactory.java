@@ -427,6 +427,7 @@ public interface RelDataTypeFactory {
   class Builder {
     private final List<String> names = new ArrayList<>();
     private final List<RelDataType> types = new ArrayList<>();
+    private final List<List<SqlColumnAttribute>> attributes = new ArrayList<>();
     private StructKind kind = StructKind.FULLY_QUALIFIED;
     private final RelDataTypeFactory typeFactory;
 
@@ -472,6 +473,18 @@ public interface RelDataTypeFactory {
     public Builder add(String name, RelDataType type) {
       names.add(name);
       types.add(type);
+      attributes.add(new ArrayList<>());
+      return this;
+    }
+
+    /**
+     * Adds a field with given name and type.
+     */
+    public Builder add(String name, RelDataType type,
+        List<SqlColumnAttribute> columnAttributes) {
+      names.add(name);
+      types.add(type);
+      attributes.add(columnAttributes);
       return this;
     }
 

@@ -16,7 +16,11 @@
  */
 package org.apache.calcite.rel.type;
 
+import org.apache.calcite.sql.SqlColumnAttribute;
+
 import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * RelDataTypeField represents the definition of a field in a structured
@@ -84,4 +88,6 @@ public interface RelDataTypeField extends Map.Entry<String, RelDataType> {
    * Returns true if this is a dynamic star field.
    */
   boolean isDynamicStar();
+
+  List<SqlColumnAttribute> getAttributes();
 }

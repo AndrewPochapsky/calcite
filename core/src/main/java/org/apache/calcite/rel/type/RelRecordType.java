@@ -18,6 +18,8 @@ package org.apache.calcite.rel.type;
 
 import org.apache.calcite.linq4j.Ord;
 import org.apache.calcite.sql.type.SqlTypeName;
+import org.apache.calcite.sql.SqlColumnAttribute;
+import org.apache.calcite.sql.pretty.SqlPrettyWriter;
 
 import java.io.Serializable;
 import java.util.List;
@@ -107,6 +109,11 @@ public class RelRecordType extends RelDataTypeImpl implements Serializable {
         sb.append(field.getType().getFullTypeString());
       } else {
         sb.append(field.getType().toString());
+      }
+      SqlPrettyWriter writer = new SqlPrettyWriter(SqlPrettyWriter.config());
+      for (SqlColumnAttribute attribute : field.getAttributes()) {
+        sb.append(writer.format(attribute));
+        writer.reset();
       }
       sb.append(" ");
       sb.append(field.getName());
