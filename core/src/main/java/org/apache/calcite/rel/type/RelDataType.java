@@ -19,6 +19,7 @@ package org.apache.calcite.rel.type;
 import org.apache.calcite.sql.SqlCollation;
 import org.apache.calcite.sql.SqlIdentifier;
 import org.apache.calcite.sql.SqlIntervalQualifier;
+import org.apache.calcite.sql.SqlColumnAttribute;
 import org.apache.calcite.sql.type.SqlTypeName;
 
 import java.nio.charset.Charset;
@@ -240,5 +241,4 @@ public interface RelDataType {
    * @return whether it has dynamic structure (for "schema-on-read" table)
    */
   boolean isDynamicStruct();
-
 }

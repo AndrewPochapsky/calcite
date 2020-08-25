@@ -112,7 +112,7 @@ public class RelRecordType extends RelDataTypeImpl implements Serializable {
       }
       SqlPrettyWriter writer = new SqlPrettyWriter(SqlPrettyWriter.config());
       for (SqlColumnAttribute attribute : field.getAttributes()) {
-        sb.append(writer.format(attribute));
+        sb.append(" ").append(writer.format(attribute));
         writer.reset();
       }
       sb.append(" ");
