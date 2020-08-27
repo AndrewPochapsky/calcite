@@ -960,6 +960,7 @@ public class SqlLiteral extends SqlNode {
       SqlParserPos pos) {
     return new SqlByteLiteral(s, pos, "XB");
   }
+
   /**
    * Creates a string literal, with optional character-set.
    *

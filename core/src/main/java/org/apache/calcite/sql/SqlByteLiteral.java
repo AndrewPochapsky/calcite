@@ -17,19 +17,25 @@
 package org.apache.calcite.sql;
 
 import org.apache.calcite.sql.parser.SqlParserPos;
-import org.apache.calcite.sql.parser.SqlParserUtil;
 import org.apache.calcite.sql.type.SqlTypeName;
 import org.apache.calcite.util.NlsString;
-import org.apache.calcite.util.Util;
 
-import java.util.Locale;
 
-import static org.apache.calcite.util.Static.RESOURCE;
 
+/**
+ * Parse tree for a {@code SqlByteLiteral}.
+ */
 public class SqlByteLiteral extends SqlLiteral {
 
   public final String format;
 
+  /**
+   * Creates a {@code SqlByteLiteral}.
+   *
+   * @param hex The hex string, can not be null
+   * @param pos The parser position, can not be null
+   * @param format The format of the byte
+   */
   public SqlByteLiteral(final String hex, final SqlParserPos pos,
       final String format) {
     super(new NlsString(hex, null, null), SqlTypeName.BYTE, pos);
